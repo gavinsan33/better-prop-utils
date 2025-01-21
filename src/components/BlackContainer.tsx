@@ -7,7 +7,7 @@ interface BlackContainerProps {
 
 const BlackContainer = ({children, className} : BlackContainerProps) => {
   return (
-    <div className={`rounded-md bg-black/50 border-red-500/70 border-2 w-[94%] ${className}`}>{children}</div>
+    <div className={`rounded-md bg-black/50 border-red-500/70 border-2 w-full ${className}`}>{children}</div>
   )
 }
 

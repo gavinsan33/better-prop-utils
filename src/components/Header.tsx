@@ -1,5 +1,6 @@
 import BlackContainer from './BlackContainer';
 import SelectBox from './Dropdown';
+import StyledCheckbox from './StyledCheckbox';
 
 interface HeaderProps {
     className?: string,
@@ -16,7 +17,7 @@ const Header = ({className}: HeaderProps) => {
 
         <h1 className='text-white'>Last sent: UNKNOWN</h1>
         <SelectBox size='large' options={["1", "2"]} className='mr-6 font-semibold'/>
-        <h1 className='text-white mr-20'>Sequences Enabled: </h1>
+        <StyledCheckbox className='mr-10'>Sequences Enabled:</StyledCheckbox>
     </BlackContainer>
   )
 }

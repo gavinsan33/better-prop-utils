@@ -12,11 +12,11 @@ const Button = ({children, color, className, onClick} : ButtonProps) => {
     const getColor = () => {
         switch(color) {
             case 'green':
-                return "bg-green-400 hover:bg-green-500"
+                return "bg-green-500 hover:bg-green-400"
             case 'red':
-                return "bg-red-500 hover:bg-red-600"
+                return "bg-red-600 hover:bg-red-500"
             case 'yellow':
-                return "bg-yellow-200 hover:bg-yellow-300"
+                return "bg-yellow-300 hover:bg-yellow-200"
         }
     }
 
