@@ -3,10 +3,11 @@ import React from 'react'
 interface ButtonProps {
     children: React.ReactNode;
     color: 'green' | 'red' | 'yellow';
+    className?: string;
     onClick?: () => void;
 }
 
-const Button = ({children, color, onClick} : ButtonProps) => {
+const Button = ({children, color, className, onClick} : ButtonProps) => {
 
     const getColor = () => {
         switch(color) {
@@ -20,9 +21,11 @@ const Button = ({children, color, onClick} : ButtonProps) => {
     }
 
   return (
-    <button onClick={onClick} className={`border-2 border-red text-2xl py-2 px-[100px] rounded-none ${getColor()}`}>
-        {children}
-    </button>
+
+        <button onClick={onClick} className={`text-2xl py-2 w-[350px] rounded-sm ${getColor()} ${className}`}>
+            {children}
+        </button>
+
   )
 }
 
