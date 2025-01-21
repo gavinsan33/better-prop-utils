@@ -4,10 +4,11 @@ interface DropdownProps {
   options: string[]; // Array of options for the dropdown
   size: 'large' | 'small';
   title?: string,
+  className?: string,
   placeholder?: string; // Placeholder text
 }
 
-const Dropdown = ({ options, size, title, placeholder = "OPEN" }: DropdownProps) => {
+const Dropdown = ({ options, size, title, className, placeholder = "OPEN" }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false); // Dropdown visibility
   const [selectedValue, setSelectedValue] = useState<string>(""); // Selected option
   const dropdownRef = useRef<HTMLDivElement>(null); // Ref for detecting outside clicks
@@ -40,7 +41,7 @@ const Dropdown = ({ options, size, title, placeholder = "OPEN" }: DropdownProps)
   }, []);
 
   return (
-    <div className={`relative inline-block`} ref={dropdownRef}>
+    <div className={`relative inline-block ${className}`} ref={dropdownRef}>
       {title && <h1 className="text-white">{title}</h1>}
       {/* Dropdown Trigger */}
       <button

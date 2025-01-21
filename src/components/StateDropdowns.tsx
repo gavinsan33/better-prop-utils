@@ -23,7 +23,7 @@ export const StateDropdowns = () => {
       </div>
 
       <div className="flex flex-row space-x-5 items-center mb-2">
-        <Button color="green" className="ml-5 my-3">SET STATES</Button>
+        <Button color="green" className="ml-5 my-3 font-semibold">SET STATES</Button>
         <h1 className="text-white align-middle">Last sent at: N/A   |   Enable Override</h1>
       </div>
 
