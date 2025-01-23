@@ -1,0 +1,17 @@
+[
+    {
+      "valves": [
+       "loxVent",
+       "kerVent",
+       "loxDrip",
+       "kerDrip",
+       "loxPressurant",
+       "kerPressurant",
+       "loxFlow",
+       "kerFlow",
+       "kerOrifice",
+       "loxPurge",
+       "kerPurge"
+      ]
+    }
+  ]

@@ -1,0 +1,57 @@
+[
+    {
+      "name": "WATER_FLOW",
+      "batches": [
+        {
+          "name": "ALL_STATES",
+          "commands": [
+            {
+              "name": "ONLINE_SAFE_D",
+              "value": "ONLINE_SAFE_D"
+            },
+            {
+              "name": "KERO_FILL",
+              "value": "KERO_FILL"  
+            },
+            {
+              "name": "KERO_FILLED",
+              "value": "KERO_FILLED"
+            },
+            {
+              "name": "LOX_FILL",
+              "value": "LOX_FILL"
+            },
+            {
+              "name": "LOX_FILLED",
+              "value": "LOX_FILLED"
+            },
+            {
+              "name": "ALL_READY_TO_PRESSURIZE",
+              "value": "ALL_READY_TO_PRESSURIZE"
+            },
+            {
+              "name": "ALL_PRESSURIZING",
+              "value": "ALL_PRESSURIZING"
+            },
+            {
+              "name": "ALL_FLOW_closed",
+              "value": "ALL_FLOW_closed"
+            },
+            {
+              "name": "ALL_FLOW_open",
+              "value": "ALL_FLOW_open"
+            },
+            {
+              "name": "KERO_FLOW_closed",
+              "value": "KERO_FLOW_closed"
+            },
+            {
+              "name": "KERO_FLOW_open",
+              "value": "KERO_FLOW_open"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+  
