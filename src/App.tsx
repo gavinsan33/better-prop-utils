@@ -17,8 +17,8 @@ function App() {
 
       <div className="flex flex-col justify-center min-h-screen w-[94%] mx-auto">
         <Header className="" />
-        <div className="flex flex-row items-center w-full my-4 ">
-          <SendAndExecute className="w-auto" />
+        <div className="flex flex-row items-center my-4 ">
+          <SendAndExecute className="w-[33%]" />
           <Console className="ml-4 w-full"/>
         </div>
         <StateDropdowns/>

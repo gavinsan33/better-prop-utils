@@ -2,15 +2,24 @@ import { useState, useRef, useEffect } from "react";
 
 interface DropdownProps {
   options: string[]; // Array of options for the dropdown
-  size: 'large' | 'small';
-  title?: string,
-  className?: string,
+  size: "large" | "small";
+  value?: number; // index to start on
+  title?: string;
+  className?: string;
   placeholder?: string; // Placeholder text
+  onClick?: (value: number) => void;
 }
 
-const Dropdown = ({ options, size, title, className, placeholder = "OPEN" }: DropdownProps) => {
+const Dropdown = ({
+  options,
+  size,
+  value = 0,
+  title,
+  className,
+  placeholder,
+  onClick = () => {},
+}: DropdownProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false); // Dropdown visibility
-  const [selectedValue, setSelectedValue] = useState<string>(""); // Selected option
   const dropdownRef = useRef<HTMLDivElement>(null); // Ref for detecting outside clicks
 
   // Toggle the dropdown visibility
@@ -19,8 +28,8 @@ const Dropdown = ({ options, size, title, className, placeholder = "OPEN" }: Dro
   };
 
   // Handle option click
-  const handleOptionClick = (value: string) => {
-    setSelectedValue(value);
+  const handleOptionClick = (indexClicked: number) => {
+    onClick(indexClicked);
     setIsOpen(false); // Close the dropdown
   };
 
@@ -41,16 +50,21 @@ const Dropdown = ({ options, size, title, className, placeholder = "OPEN" }: Dro
   }, []);
 
   return (
-    <div className={`relative inline-block ${className}`} ref={dropdownRef}>
+    <div
+      className={`relative inline-block overflow-x ${className}`}
+      ref={dropdownRef}
+    >
       {title && <h1 className="text-white">{title}</h1>}
       {/* Dropdown Trigger */}
       <button
         onClick={toggleDropdown}
-        className={`${size === 'large' ? "py-2 w-52" : "w-36"} text-left bg-white border rounded shadow focus:outline-none focus:ring-2 focus:ring-gray-700/20`}
+        className={`${
+          size === "large" ? "py-2 w-52" : "w-36"
+        } text-left bg-white border rounded shadow focus:outline-none focus:ring-2 focus:ring-gray-700/20`}
         aria-expanded={isOpen}
         aria-haspopup="listbox"
       >
-        {selectedValue || placeholder}
+        {options[value] || placeholder}
         <span className="float-right">
           {/* Chevron Icon */}
           {isOpen ? "▲" : "▼"}
@@ -62,17 +76,17 @@ const Dropdown = ({ options, size, title, className, placeholder = "OPEN" }: Dro
         <ul
           className="absolute z-10 w-full mt-2 bg-white border rounded shadow"
           role="listbox"
-          aria-activedescendant={selectedValue}
+          aria-activedescendant={options[value]}
         >
           {options.map((option, index) => (
             <li
               key={index}
               className={`px-4 py-2 cursor-pointer hover:bg-blue-100 ${
-                selectedValue === option ? "bg-blue-100 font-bold" : ""
-              }`}
-              onClick={() => handleOptionClick(option)}
+                value === index ? "bg-blue-100 font-bold" : ""
+              } break-words`}
+              onClick={() => handleOptionClick(index)}
               role="option"
-              aria-selected={selectedValue === option}
+              aria-selected={options[value] === option}
             >
               {option}
             </li>

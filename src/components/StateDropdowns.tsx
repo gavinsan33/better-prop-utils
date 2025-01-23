@@ -2,8 +2,27 @@ import Button from "./Button";
 import SelectBox from "./Dropdown";
 import BlackContainer from "./BlackContainer";
 import StyledCheckbox from "./StyledCheckbox";
+import { useState } from "react";
 
 export const StateDropdowns = () => {
+
+  const options = Array(11).fill(["OPEN", "CLOSED"]);
+  const defaultStartStatus = 0;
+
+  
+  const [selectedValue, setSelectedValue] = useState<number[]>(options.map(() => defaultStartStatus));
+
+
+  // updates an index with the given value
+  const updateValuesArr = (index: number, value: number) => {
+
+    console.log("index: " + index + " value: " + value);
+
+    const newArr = [...selectedValue];
+    newArr[index] = value;
+    setSelectedValue(newArr);
+  }
+
 
   interface ContainerStackProps {
     children : React.ReactNode,
@@ -19,28 +38,29 @@ export const StateDropdowns = () => {
   }
 
   return (
+    
     <BlackContainer className="flex flex-col">
       <div className="flex w-full justify-around items-start py-2">
         <ContainerStack>
-          <SelectBox size="small" title="loxVent" options={["1", "2"]}/>
-          <SelectBox size="small" title="kerOrifice" options={["1", "2"]}/>
+          <SelectBox size="small" onClick={(value: number)=>updateValuesArr(0, value)} value={selectedValue[0]} title="loxVent" options={options[0]}/>
+          <SelectBox size="small" onClick={(value: number)=>updateValuesArr(8, value)} value={selectedValue[8]} title="kerOrifice" options={options[8]}/>
         </ContainerStack>
         
         <ContainerStack>
-          <SelectBox size="small" title="kerVent" options={["1", "2"]}/>
-          <SelectBox size="small" title="loxPurge" options={["1", "2"]}/>
+          <SelectBox size="small" onClick={(value: number)=>updateValuesArr(1, value)} value={selectedValue[1]} title="kerVent" options={options[1]}/>
+          <SelectBox size="small" onClick={(value: number)=>updateValuesArr(9, value)} value={selectedValue[9]} title="loxPurge" options={options[9]}/>
         </ContainerStack>
 
         <ContainerStack>
-          <SelectBox size="small" title="loxDrip" options={["1", "2"]}/>
-          <SelectBox size="small" title="kerPurge" options={["1", "2"]}/> 
+          <SelectBox size="small" onClick={(value: number)=>updateValuesArr(2, value)} value={selectedValue[2]} title="loxDrip" options={options[2]}/>
+          <SelectBox size="small" onClick={(value: number)=>updateValuesArr(10, value)} value={selectedValue[10]} title="kerPurge" options={options[10]}/> 
         </ContainerStack>
 
-        <SelectBox size="small" title="kerDrip" options={["1", "2"]}/>
-        <SelectBox size="small" title="loxPressurant" options={["1", "2"]}/>
-        <SelectBox size="small" title="kerPrsesurant" options={["1", "2"]}/>
-        <SelectBox size="small" title="loxFlow" options={["1", "2"]}/>
-        <SelectBox size="small" title="kerFlow" options={["1", "2"]}/>
+        <SelectBox size="small" onClick={(value: number)=>updateValuesArr(3, value)} value={selectedValue[3]} title="kerDrip" options={options[3]}/>
+        <SelectBox size="small" onClick={(value: number)=>updateValuesArr(4, value)} value={selectedValue[4]} title="loxPressurant" options={options[4]}/>
+        <SelectBox size="small" onClick={(value: number)=>updateValuesArr(5, value)} value={selectedValue[5]} title="kerPrsesurant" options={options[5]}/>
+        <SelectBox size="small" onClick={(value: number)=>updateValuesArr(6, value)} value={selectedValue[6]} title="loxFlow" options={options[6]}/>
+        <SelectBox size="small" onClick={(value: number)=>updateValuesArr(7, value)} value={selectedValue[7]} title="kerFlow" options={options[7]}/>
       </div>
 
       <div className="flex flex-row space-x-5 items-center mb-2">
