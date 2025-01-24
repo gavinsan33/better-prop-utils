@@ -12,6 +12,12 @@ export const StateDropdowns = () => {
   
   const [selectedValue, setSelectedValue] = useState<number[]>(options.map(() => defaultStartStatus));
 
+  const [isChecked, setIsChecked] = useState(false);
+
+  const handleCheck = () => {
+    setIsChecked(!isChecked);
+  }
+
 
   // updates an index with the given value
   const updateValuesArr = (index: number, value: number) => {
@@ -67,7 +73,7 @@ export const StateDropdowns = () => {
         <Button color="green" className="ml-5 my-3 font-semibold">SET STATES</Button>
         <h1 className="text-white align-middle">Last sent at: N/A</h1>
 
-        <StyledCheckbox>Enable Override:</StyledCheckbox>
+        <StyledCheckbox isChecked={isChecked} onClick={handleCheck}>Enable Override:</StyledCheckbox>
       </div>
 
     </BlackContainer>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import BlackContainer from "./BlackContainer";
 import SelectBox from "./Dropdown";
 import StyledCheckbox from "./StyledCheckbox";
@@ -14,6 +14,12 @@ const Header = ({ className }: HeaderProps) => {
   const {sequences} = sequenceJson[0]; // REVISIT THIS!!!!!!!!!
 
   const defaultVals = [0, 0, 0, 0];
+
+  const handleCheck = () => {
+    setIsChecked(!isChecked);
+  }
+
+  const [isChecked, setIsChecked] = useState(false)
 
   const [drop1Value, setDrop1Value] = useState(defaultVals[0]);
   const [drop2Value, setDrop2Value] = useState(defaultVals[1]);
@@ -58,7 +64,7 @@ const Header = ({ className }: HeaderProps) => {
         value={drop4Value}
         className="mr-6 font-semibold"
       />
-      <StyledCheckbox className="mr-10">Sequences Enabled:</StyledCheckbox>
+      <StyledCheckbox className="mr-10" onClick={handleCheck} isChecked={isChecked}>Sequences Enabled:</StyledCheckbox>
     </BlackContainer>
   );
 };
