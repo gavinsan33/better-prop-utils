@@ -17,11 +17,11 @@ const Button = ({
   const getColor = () => {
     switch (color) {
       case "green":
-        return "bg-green-500 hover:bg-green-400";
+        return "bg-green-500"
       case "red":
-        return "bg-red-600 hover:bg-red-500";
+        return "bg-red-600";
       case "yellow":
-        return "bg-yellow-300 hover:bg-yellow-200";
+        return "bg-yellow-300";
     }
   };
 
@@ -38,7 +38,7 @@ const Button = ({
   return (
     <button
       onClick={handleButtonPress}
-      className={`${isPressed ? "motion-bg-in-transparent motion-duration-700" : ""} text-2xl py-2 w-[350px] rounded-sm ${getColor()} ${className}`}
+      className={`${isPressed ? "motion-bg-in-transparent motion-duration-700" : ""} text-2xl py-2 w-[350px] rounded-sm hover:brightness-75 ${getColor()} ${className}`}
     >
       {children}
     </button>

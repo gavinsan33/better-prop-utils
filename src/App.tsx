@@ -3,7 +3,7 @@ import { StateDropdowns } from "./components/StateDropdowns";
 import Header from "./components/Header";
 import SendAndExecute from "./components/SendAndExecute";
 import Console from "./components/Console";
-import Graphs from "./components/Graphs";
+import GraphsZone from "./components/GraphsZone";
 
 export default function App() {
   return (
@@ -22,7 +22,7 @@ export default function App() {
           <Console className="ml-4"/>
         </div>
         <StateDropdowns/>
-        <Graphs/>
+        <GraphsZone/>
       </div>
     </div>
   );

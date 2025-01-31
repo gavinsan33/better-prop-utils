@@ -11,13 +11,13 @@ export const StateDropdowns = () => {
 
   
   const [selectedValue, setSelectedValue] = useState<number[]>(options.map(() => defaultStartStatus));
-
   const [isChecked, setIsChecked] = useState(false);
+  const [prevTime, setTime] = useState<Date | null>(null)
+
 
   const handleCheck = () => {
     setIsChecked(!isChecked);
   }
-
 
   // updates an index with the given value
   const updateValuesArr = (index: number, value: number) => {
@@ -28,7 +28,6 @@ export const StateDropdowns = () => {
     newArr[index] = value;
     setSelectedValue(newArr);
   }
-
 
   interface ContainerStackProps {
     children : React.ReactNode,
@@ -70,8 +69,8 @@ export const StateDropdowns = () => {
       </div>
 
       <div className="flex flex-row space-x-5 items-center mb-2">
-        <Button color="green" className="ml-5 my-3 font-semibold">SET STATES</Button>
-        <h1 className="text-white align-middle">Last sent at: N/A</h1>
+        <Button onClick={() => setTime(new Date())} color="green" className="ml-5 my-3 font-semibold">SET STATES</Button>
+        <h1 className="text-white align-middle">Last sent at: {prevTime ? prevTime.toLocaleString().split(" ")[1] : "N/A"}</h1>
 
         <StyledCheckbox isChecked={isChecked} onClick={handleCheck}>Enable Override:</StyledCheckbox>
       </div>

@@ -1,6 +1,5 @@
 import BlackContainer from "./BlackContainer"
 import Button from "./Button"
-import { useState } from "react"
 
 interface SendAndExecuteProps{
     className?: string,
@@ -10,7 +9,6 @@ interface SendAndExecuteProps{
 }
 
 const SendAndExecute = ({className, onClickExecuteSequence=()=>{}, onClickOnlineSafe=()=>{}, onClickSendCommand=()=>{}} : SendAndExecuteProps) => {
-
 
   return (
     <BlackContainer className={`w-1/3 h-80 flex flex-col items-center justify-around text-white ${className}`}>
