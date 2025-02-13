@@ -8,13 +8,17 @@ import {
   Tooltip,
 } from "recharts";
 import { SensorData } from "../types/SensorData";
+import { useWebSocketConnection } from "../context/WebSocketContext";
 
 type GraphProps = {
   data?: SensorData[];
-  isPressureGraph?: boolean;
+  graphType: 'pressure' | 'temperature';
 }
 
-export default function Graph({ data }: GraphProps) {
+export default function Graph({ data, graphType}: GraphProps) {
+  const isLoading = !useWebSocketConnection().isConnected;
+  console.log(isLoading);
+
   const Loading = () => {
     return (
       <div className="w-12 h-12 motion-rotate-loop-[1turn]/reset z-10">
@@ -40,7 +44,7 @@ export default function Graph({ data }: GraphProps) {
               loxVenturi: pressureSensors.loxVenturi.sensorReading,
               pneumaticDucer: pressureSensors.pneumaticDucer.sensorReading,
               purgeDucer: pressureSensors.purgeDucer.sensorReading,
-              timestamp: currTime,
+              timestamp: currTime / 1000,
             }
           )
         }  
@@ -48,37 +52,31 @@ export default function Graph({ data }: GraphProps) {
     )
   }
 
-  return (
-    <div className="relative">
-      {!data && (
-        <div className="absolute inset-0 left-10 bottom-10 flex items-center justify-center flex-col text-white/80">
-          <Loading />
-          <h1 className="motion-preset-oscillate-sm">Loading Data...</h1>
-        </div>
-      )}
-      <LineChart width={500} height={300} data={formatPressureData()} margin={{ right: 10 }}>
-        <CartesianGrid stroke="#bab6b6" />
-        <XAxis
-          dataKey="timestamp"
-          stroke="#ffffff"
-          type="number"
-          domain={["dataMin", "dataMax"]}
-          label={{
-            value: "Time (ms)",
-            position: "insideBottomRight",
-            offset: -10,
-            fill: "#ffffff",
-          }}
-        />
-        <YAxis stroke="#ffffff"/>
-        <Tooltip
-          formatter={(value, name) => [`${value}`, name]} // Custom formatter for tooltip values
-          labelFormatter={(label) => `Time: ${label} ms`} // Custom label formatter for tooltip
-        />
+  const formatTemperatureData = () => {
+    return (
+      data?.map(
+        (sensordata: SensorData) => {
+          const currTime = sensordata.timeStamp;
+          const temperatureSensors = sensordata.data.tempSensors
+          return (
+            {
+              manifoldInletThermo: temperatureSensors.manifoldInletThermo.sensorReading,
+              manifoldOutletThermo: temperatureSensors.manifoldOutletThermo.sensorReading,
+              tank1Thermo: temperatureSensors.tank1Thermo.sensorReading,
+              tank2Thermo: temperatureSensors.tank2Thermo.sensorReading,
+              tank3Thermo: temperatureSensors.tank3Thermo.sensorReading,
+              timestamp: currTime / 1000,
+            }
+          )
+        }  
+      )
+    )
+  }
 
-        {/* {Object.keys(data?.[0] || {}).filter(key => key.startsWith('sensorReading')).map((key, index) => (
-          <Line key={index} type="monotone" dataKey={key} stroke={`#${Math.floor(Math.random()*16777215).toString(16)}`} />
-        ))} */}
+  const getLines = () => {
+    if (graphType === 'pressure') {
+      return (
+        <>
         <Line type="monotone" dataKey="kerInletDucer" isAnimationActive={false} stroke="#ff0000" />
         <Line type="monotone" dataKey="kerPintleDucer" isAnimationActive={false} stroke="#00ff00" />
         <Line type="monotone" dataKey="kerTankDucer" isAnimationActive={false} stroke="#0000ff" />
@@ -88,8 +86,51 @@ export default function Graph({ data }: GraphProps) {
         <Line type="monotone" dataKey="loxVenturi" isAnimationActive={false} stroke="#ff8000" />
         <Line type="monotone" dataKey="pneumaticDucer" isAnimationActive={false} stroke="#ff0080" />
         <Line type="monotone" dataKey="purgeDucer" isAnimationActive={false} stroke="#80ff00" />
-  
-        
+        </>
+      ) 
+    } else {
+      return (
+        <>
+        <Line type="monotone" dataKey="manifoldInletThermo" isAnimationActive={false} stroke="#ff0000" />
+        <Line type="monotone" dataKey="manifoldOutletThermo" isAnimationActive={false} stroke="#00ff00" />
+        <Line type="monotone" dataKey="tank1Thermo" isAnimationActive={false} stroke="#0000ff" />
+        <Line type="monotone" dataKey="tank2Thermo" isAnimationActive={false} stroke="#ff00ff" />
+        <Line type="monotone" dataKey="tank3Thermo" isAnimationActive={false} stroke="#ffff00" />
+        </>
+      )
+    }
+
+  }
+
+  return (
+    <div className="relative">
+      {(!data || isLoading) && (
+        <div className="absolute inset-0 left-10 bottom-10 flex items-center justify-center flex-col text-white/80">
+          <Loading />
+          <h1 className="motion-preset-oscillate-sm">Loading Data...</h1>
+        </div>
+      )}
+      <LineChart width={500} height={300} data={graphType === 'pressure' ? formatPressureData() : formatTemperatureData()} margin={{ right: 10, bottom: 7 }}>
+        <CartesianGrid stroke="#bab6b6" />
+        <XAxis
+          dataKey="timestamp"
+          stroke="#ffffff"
+          type="number"
+          domain={["dataMin", "dataMax"]}
+          label={{
+            value: "Time (s)",
+            position: "insideBottomRight",
+            offset: -5,
+            fill: "#ffffff",
+          }}
+        />
+        <YAxis stroke="#ffffff"/>
+        <Tooltip
+          formatter={(value, name) => [`${value}`, name]} // Custom formatter for tooltip values
+          labelFormatter={(label) => `Time: ${label} ms`} // Custom label formatter for tooltip
+        />
+
+        {getLines()}
 
       </LineChart>
     </div>

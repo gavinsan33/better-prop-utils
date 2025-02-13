@@ -1,13 +1,23 @@
 import { openDB } from "idb";
 
-export const dbPromise = openDB("sensorDB", 1, {
+
+export const dbPromise = openDB("sensorDB", 2, { // Increment version number
     upgrade(db) {
+        // Create sensorData store if it doesn't exist
         if (!db.objectStoreNames.contains("sensorData")) {
-            const store = db.createObjectStore("sensorData", { keyPath: "id", autoIncrement: true });
+            const store = db.createObjectStore("sensorData", { 
+                keyPath: "id", 
+                autoIncrement: true 
+            });
             store.createIndex("sessionId", "sessionId");
         }
+        
+        // Create sessions store if it doesn't exist
         if (!db.objectStoreNames.contains("sessions")) {
-            db.createObjectStore("sessions", { keyPath: "id", autoIncrement: true });
+            db.createObjectStore("sessions", { 
+                keyPath: "id", 
+                autoIncrement: true 
+            });
         }
     },
 });
@@ -28,6 +38,7 @@ export const getSessionId = async () => {
 export const saveSensorData = async (data: any) => {
     const db = await dbPromise;
     const sessionId = await getSessionId();
+    console.log(sessionId);
     await db.put("sensorData", { sessionId, timestamp: Date.now(), data });
 };
 
