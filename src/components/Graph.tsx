@@ -9,6 +9,7 @@ import {
 } from "recharts";
 import { SensorData } from "../types/SensorData";
 import { useWebSocketConnection } from "../context/WebSocketContext";
+import { useRef } from "react";
 
 type GraphProps = {
   data?: SensorData[];
@@ -17,6 +18,7 @@ type GraphProps = {
 
 export default function Graph({ data, graphType}: GraphProps) {
   const isLoading = !useWebSocketConnection().isConnected;
+  const initialTimestampRef = useRef<number | null>(null);
   console.log(isLoading);
 
   const Loading = () => {
@@ -26,12 +28,20 @@ export default function Graph({ data, graphType}: GraphProps) {
       </div>
     );
   };
-  
+
+  const getRelativeTime = (timestamp: number, initialTimestamp: number) => {
+    return (timestamp - initialTimestamp) / 1000;
+  };
+
   const formatPressureData = () => {
+    if (initialTimestampRef.current === null && data?.length) {
+      initialTimestampRef.current = data[0].timeStamp;
+    }
+    const initialTimestamp = initialTimestampRef.current || 0;
     return (
       data?.map(
         (sensordata: SensorData) => {
-          const currTime = sensordata.timeStamp;
+          const currTime = getRelativeTime(sensordata.timeStamp, initialTimestamp);
           const pressureSensors = sensordata.data.pressureSensors;
           return (
             {
@@ -44,7 +54,7 @@ export default function Graph({ data, graphType}: GraphProps) {
               loxVenturi: pressureSensors.loxVenturi.sensorReading,
               pneumaticDucer: pressureSensors.pneumaticDucer.sensorReading,
               purgeDucer: pressureSensors.purgeDucer.sensorReading,
-              timestamp: currTime / 1000,
+              timestamp: currTime,
             }
           )
         }  
@@ -53,10 +63,14 @@ export default function Graph({ data, graphType}: GraphProps) {
   }
 
   const formatTemperatureData = () => {
+    if (initialTimestampRef.current === null && data?.length) {
+      initialTimestampRef.current = data[0].timeStamp;
+    }
+    const initialTimestamp = initialTimestampRef.current || 0;
     return (
       data?.map(
         (sensordata: SensorData) => {
-          const currTime = sensordata.timeStamp;
+          const currTime = getRelativeTime(sensordata.timeStamp, initialTimestamp);
           const temperatureSensors = sensordata.data.tempSensors
           return (
             {
@@ -65,7 +79,7 @@ export default function Graph({ data, graphType}: GraphProps) {
               tank1Thermo: temperatureSensors.tank1Thermo.sensorReading,
               tank2Thermo: temperatureSensors.tank2Thermo.sensorReading,
               tank3Thermo: temperatureSensors.tank3Thermo.sensorReading,
-              timestamp: currTime / 1000,
+              timestamp: currTime,
             }
           )
         }  
