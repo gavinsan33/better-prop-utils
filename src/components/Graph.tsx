@@ -8,7 +8,7 @@ import {
   Tooltip,
 } from "recharts";
 import { SensorData } from "../types/SensorData";
-import { useWebSocketConnection } from "../context/WebSocketContext";
+import { useWebSocket } from "../context/WebSocketContext";
 import { useRef } from "react";
 
 type GraphProps = {
@@ -17,7 +17,7 @@ type GraphProps = {
 }
 
 export default function Graph({ data, graphType}: GraphProps) {
-  const isLoading = !useWebSocketConnection().isConnected;
+  const isLoading = !useWebSocket().isConnected;
   const initialTimestampRef = useRef<number | null>(null);
   console.log(isLoading);
 

@@ -3,6 +3,7 @@ import SelectBox from "./Dropdown";
 import BlackContainer from "./BlackContainer";
 import StyledCheckbox from "./StyledCheckbox";
 import { useState } from "react";
+import { useWebSocket } from "../context/WebSocketContext";
 
 export const StateDropdowns = () => {
 
@@ -13,6 +14,8 @@ export const StateDropdowns = () => {
   const [selectedValue, setSelectedValue] = useState<number[]>(options.map(() => defaultStartStatus));
   const [isChecked, setIsChecked] = useState(false);
   const [prevTime, setTime] = useState<Date | null>(null)
+
+  const ws = useWebSocket();
 
 
   const handleCheck = () => {
@@ -42,6 +45,30 @@ export const StateDropdowns = () => {
     )
   }
 
+  const onButtonClick = () => {
+
+    const activeElements = {
+      loxVent: options[0][selectedValue[0]],
+      kerVent: options[1][selectedValue[1]],
+      loxDrip: options[2][selectedValue[2]],
+      kerDrip: options[3][selectedValue[3]],
+      loxPressurant: options[4][selectedValue[4]],
+      kerPressurant: options[5][selectedValue[5]],
+      loxFlow: options[6][selectedValue[6]],
+      kerFlow: options[7][selectedValue[7]],
+      kerOrifice: options[8][selectedValue[8]],
+      loxPurge: options[9][selectedValue[9]],
+      kerPurge: options[10][selectedValue[10]],
+    };
+
+    ws.sendMessage(JSON.stringify({
+      command: "SET_ACTIVE_ELEMENTS",
+      activeElements: activeElements
+    }));
+    
+    setTime(new Date());
+  }
+
   return (
     
     <BlackContainer className="flex flex-col">
@@ -69,7 +96,7 @@ export const StateDropdowns = () => {
       </div>
 
       <div className="flex flex-row space-x-5 items-center mb-2">
-        <Button onClick={() => setTime(new Date())} color="green" className="ml-5 my-3 font-semibold">SET STATES</Button>
+        <Button onClick={onButtonClick} color="green" className="ml-5 my-3 font-semibold">SET STATES</Button>
         <h1 className="text-white align-middle">Last sent at: {prevTime ? prevTime.toLocaleString().split(" ")[1] : "N/A"}</h1>
 
         <StyledCheckbox isChecked={isChecked} onClick={handleCheck}>Enable Override:</StyledCheckbox>

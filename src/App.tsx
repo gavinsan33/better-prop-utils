@@ -19,7 +19,7 @@ export default function App() {
         <div className="flex flex-col min-h-screen w-[94%] mx-auto">
           <Header />
           <div className="flex flex-row items-center my-4 ">
-            <SendAndExecute />
+            <SendAndExecute/>
             <Console className="ml-4"/>
           </div>
           <StateDropdowns/>
