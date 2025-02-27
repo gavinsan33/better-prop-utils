@@ -2,7 +2,7 @@ import Logo from "./assets/aeronu.png";
 import { StateDropdowns } from "./components/StateDropdowns";
 import Header from "./components/Header";
 import SendAndExecute from "./components/SendAndExecute";
-import Console from "./components/Console";
+import Console from "./components/SensorReadings";
 import GraphsZone from "./components/GraphsZone";
 import { WebSocketProvider } from "./context/WebSocketContext";
 

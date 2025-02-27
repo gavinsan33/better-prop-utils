@@ -6,25 +6,30 @@ import {
   XAxis,
   YAxis,
   Tooltip,
+  ResponsiveContainer
 } from "recharts";
 import { SensorData } from "../types/SensorData";
 import { useWebSocket } from "../context/WebSocketContext";
 import { useRef } from "react";
 
+type SensorVisibility = {
+  [key: string]: boolean;
+}
+
 type GraphProps = {
   data?: SensorData[];
   graphType: 'pressure' | 'temperature';
+  visibleSensors?: SensorVisibility;
 }
 
-export default function Graph({ data, graphType}: GraphProps) {
+export default function Graph({ data, graphType, visibleSensors = {} }: GraphProps) {
   const isLoading = !useWebSocket().isConnected;
   const initialTimestampRef = useRef<number | null>(null);
-  console.log(isLoading);
 
   const Loading = () => {
     return (
       <div className="w-12 h-12 motion-rotate-loop-[1turn]/reset z-10">
-        <img src={Spinner} />
+        <img src={Spinner} alt="Loading" />
       </div>
     );
   };
@@ -87,66 +92,122 @@ export default function Graph({ data, graphType}: GraphProps) {
     )
   }
 
+  const pressureColors = {
+    kerInletDucer: "#ff0000",
+    kerPintleDucer: "#00ff00", 
+    kerTankDucer: "#0000ff",
+    kerVenturi: "#ff00ff",
+    loxInletDucer: "#ffff00",
+    loxTankDucer: "#00ffff",
+    loxVenturi: "#ff8000",
+    pneumaticDucer: "#ff0080",
+    purgeDucer: "#80ff00"
+  };
+
+  const temperatureColors = {
+    manifoldInletThermo: "#ff0000",
+    manifoldOutletThermo: "#00ff00",
+    tank1Thermo: "#0000ff",
+    tank2Thermo: "#ff00ff",
+    tank3Thermo: "#ffff00",
+  };
+
   const getLines = () => {
     if (graphType === 'pressure') {
-      return (
-        <>
-        <Line type="monotone" dataKey="kerInletDucer" isAnimationActive={false} stroke="#ff0000" />
-        <Line type="monotone" dataKey="kerPintleDucer" isAnimationActive={false} stroke="#00ff00" />
-        <Line type="monotone" dataKey="kerTankDucer" isAnimationActive={false} stroke="#0000ff" />
-        <Line type="monotone" dataKey="kerVenturi" isAnimationActive={false} stroke="#ff00ff" />
-        <Line type="monotone" dataKey="loxInletDucer" isAnimationActive={false} stroke="#ffff00" />
-        <Line type="monotone" dataKey="loxTankDucer" isAnimationActive={false} stroke="#00ffff" />
-        <Line type="monotone" dataKey="loxVenturi" isAnimationActive={false} stroke="#ff8000" />
-        <Line type="monotone" dataKey="pneumaticDucer" isAnimationActive={false} stroke="#ff0080" />
-        <Line type="monotone" dataKey="purgeDucer" isAnimationActive={false} stroke="#80ff00" />
-        </>
-      ) 
+      return Object.entries(pressureColors).map(([key, color]) => {
+        // Skip if this sensor is explicitly set to not visible
+        if (visibleSensors[key] === false) {
+          return null;
+        }
+        return (
+          <Line 
+            key={key}
+            type="monotone" 
+            dataKey={key} 
+            isAnimationActive={false} 
+            stroke={color} 
+          />
+        );
+      });
     } else {
-      return (
-        <>
-        <Line type="monotone" dataKey="manifoldInletThermo" isAnimationActive={false} stroke="#ff0000" />
-        <Line type="monotone" dataKey="manifoldOutletThermo" isAnimationActive={false} stroke="#00ff00" />
-        <Line type="monotone" dataKey="tank1Thermo" isAnimationActive={false} stroke="#0000ff" />
-        <Line type="monotone" dataKey="tank2Thermo" isAnimationActive={false} stroke="#ff00ff" />
-        <Line type="monotone" dataKey="tank3Thermo" isAnimationActive={false} stroke="#ffff00" />
-        </>
-      )
+      return Object.entries(temperatureColors).map(([key, color]) => {
+        // Skip if this sensor is explicitly set to not visible
+        if (visibleSensors[key] === false) {
+          return null;
+        }
+        return (
+          <Line 
+            key={key}
+            type="monotone" 
+            dataKey={key} 
+            isAnimationActive={false} 
+            stroke={color} 
+          />
+        );
+      });
     }
-
   }
 
   return (
-    <div className="relative">
+    <div className="relative w-full">
       {(!data || isLoading) && (
-        <div className="absolute inset-0 left-10 bottom-10 flex items-center justify-center flex-col text-white/80">
+        <div className="absolute inset-0 flex items-center justify-center flex-col text-white/80 z-10">
           <Loading />
           <h1 className="motion-preset-oscillate-sm">Loading Data...</h1>
         </div>
       )}
-      <LineChart width={500} height={300} data={graphType === 'pressure' ? formatPressureData() : formatTemperatureData()} margin={{ right: 10, bottom: 7 }}>
-        <CartesianGrid stroke="#bab6b6" />
-        <XAxis
-          dataKey="timestamp"
-          stroke="#ffffff"
-          type="number"
-          domain={["dataMin", "dataMax"]}
-          label={{
-            value: "Time (s)",
-            position: "insideBottomRight",
-            offset: -5,
-            fill: "#ffffff",
-          }}
-        />
-        <YAxis stroke="#ffffff"/>
-        <Tooltip
-          formatter={(value, name) => [`${value}`, name]} // Custom formatter for tooltip values
-          labelFormatter={(label) => `Time: ${label} ms`} // Custom label formatter for tooltip
-        />
+      <ResponsiveContainer width="100%" height={250}>
+        <LineChart 
+          data={graphType === 'pressure' ? formatPressureData() : formatTemperatureData()} 
+          margin={{ right: 10, left: -20, bottom: 5, top: 5 }}
+        >
+          <CartesianGrid stroke="#bab6b6" />
+          <XAxis
+            dataKey="timestamp"
+            stroke="#ffffff"
+            type="number"
+            domain={["dataMin", "dataMax"]}
+            label={{
+              value: "Time (s)",
+              position: "insideBottomRight",
+              offset: -5,
+              fill: "#ffffff",
+            }}
+          />
+          <YAxis stroke="#ffffff"/>
+          <Tooltip
+            formatter={(value, name) => [`${value}`, name]} 
+            labelFormatter={(label) => `Time: ${label} s`}
+          />
 
-        {getLines()}
+          {getLines()}
 
-      </LineChart>
+        </LineChart>
+      </ResponsiveContainer>
     </div>
   );
 }
+
+export const getSensorColors = (graphType: 'pressure' | 'temperature') => {
+  if (graphType === 'pressure') {
+    return {
+      kerInletDucer: "#ff0000",
+      kerPintleDucer: "#00ff00", 
+      kerTankDucer: "#0000ff",
+      kerVenturi: "#ff00ff",
+      loxInletDucer: "#ffff00",
+      loxTankDucer: "#00ffff",
+      loxVenturi: "#ff8000",
+      pneumaticDucer: "#ff0080",
+      purgeDucer: "#80ff00"
+    };
+  } else {
+    return {
+      manifoldInletThermo: "#ff0000",
+      manifoldOutletThermo: "#00ff00",
+      tank1Thermo: "#0000ff",
+      tank2Thermo: "#ff00ff",
+      tank3Thermo: "#ffff00",
+    };
+  }
+};

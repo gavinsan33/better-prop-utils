@@ -70,3 +70,17 @@ export const resetDB = async () => {
     await db.clear("sessions");
     sessionStorage.removeItem("sessionId");
 }
+
+export const createNewSession = async () => {
+    // Clear session storage to force new session creation
+    sessionStorage.removeItem("sessionId");
+    
+    // Create a new session in the database
+    const db = await dbPromise;
+    const newSessionId = await db.add("sessions", { timestamp: Date.now() });
+    
+    // Store the new session ID in sessionStorage
+    sessionStorage.setItem("sessionId", newSessionId.toString());
+    
+    return newSessionId;
+};
