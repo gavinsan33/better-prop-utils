@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useSelection } from "../context/SelectionContext";
 import BlackContainer from "./BlackContainer";
 import SelectBox from "./Dropdown";
 import StyledCheckbox from "./StyledCheckbox";
 import statesJson from "../data/STATE_SETS.json";
-import sequenceJson from "../data/SEQUENCE_NAMES.json"
+import sequenceJson from "../data/SEQUENCE_NAMES.json";
 
 interface HeaderProps {
   className?: string;
@@ -11,20 +11,20 @@ interface HeaderProps {
 
 const Header = ({ className }: HeaderProps) => {
   const data = [...statesJson];
-  const {sequences} = sequenceJson[0]; // REVISIT THIS!!!!!!!!!
-
-  const defaultVals = [0, 0, 0, 0];
-
-  const handleCheck = () => {
-    setIsChecked(!isChecked);
-  }
-
-  const [isChecked, setIsChecked] = useState(false)
-
-  const [drop1Value, setDrop1Value] = useState(defaultVals[0]);
-  const [drop2Value, setDrop2Value] = useState(defaultVals[1]);
-  const [drop3Value, setDrop3Value] = useState(defaultVals[2]);
-  const [drop4Value, setDrop4Value] = useState(defaultVals[4]);
+  const {sequences} = sequenceJson[0];
+  
+  const { 
+    testTypeIndex, 
+    setTestTypeIndex, 
+    batchIndex, 
+    setBatchIndex, 
+    commandIndex, 
+    setCommandIndex, 
+    sequenceIndex, 
+    setSequenceIndex,
+    sequencesEnabled,
+    setSequencesEnabled
+  } = useSelection();
 
   return (
     <BlackContainer
@@ -33,25 +33,25 @@ const Header = ({ className }: HeaderProps) => {
       <div className="flex justify-start spacing-x-5 my-4 ml-3 space-x-2 font-semibold">
         <SelectBox
           size="large"
-          onClick={(value) => setDrop1Value(value)}
+          onClick={(value) => setTestTypeIndex(value)}
           options={data.map((state) => state.name)}
-          value={drop1Value}
+          value={testTypeIndex}
         />
         <SelectBox
           size="large"
-          onClick={(value) => setDrop2Value(value)}
-          options={statesJson[drop1Value].batches.flatMap(
+          onClick={(value) => setBatchIndex(value)}
+          options={statesJson[testTypeIndex].batches.flatMap(
             (batch) => batch.name
           )}
-          value={drop2Value}
+          value={batchIndex}
         />
         <SelectBox
           size="large"
-          onClick={(value) => setDrop3Value(value)}
-          options={statesJson[drop1Value].batches[drop2Value].commands.flatMap(
+          onClick={(value) => setCommandIndex(value)}
+          options={statesJson[testTypeIndex].batches[batchIndex].commands.flatMap(
             (command) => command.name
           )}
-          value={drop3Value}
+          value={commandIndex}
           className="text-green-700"
         />
       </div>
@@ -59,12 +59,18 @@ const Header = ({ className }: HeaderProps) => {
       <h1 className="text-white">Last sent: UNKNOWN</h1>
       <SelectBox
         size="large"
-        onClick={(value) => setDrop4Value(value)}
+        onClick={(value) => setSequenceIndex(value)}
         options={sequences}
-        value={drop4Value}
+        value={sequenceIndex}
         className="mr-6 font-semibold"
       />
-      <StyledCheckbox className="mr-10" onClick={handleCheck} isChecked={isChecked}>Sequences Enabled:</StyledCheckbox>
+      <StyledCheckbox 
+        className="mr-10" 
+        onClick={() => setSequencesEnabled(!sequencesEnabled)} 
+        isChecked={sequencesEnabled}
+      >
+        Sequences Enabled:
+      </StyledCheckbox>
     </BlackContainer>
   );
 };
